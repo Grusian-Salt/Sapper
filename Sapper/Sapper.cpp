@@ -1,20 +1,93 @@
-﻿// Sapper.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
+﻿#include <iostream>
 
-#include <iostream>
+const size_t FieldX = 10;
+const size_t FieldY = 10;
+uint16_t Mines = 10;
+
+class field
+{
+private:
+    struct node
+    {
+        uint8_t minesCount;
+        bool seen;
+        bool flag;
+        node()
+        {
+            minesCount = 0;
+            seen = false;
+            flag = false;
+        }
+        void setmine()
+        {
+            minesCount = 9;
+        }
+        void setmine(uint8_t count)
+        {
+            minesCount = count;
+        }
+    };
+    uint16_t mines;
+    uint16_t Flags;
+    node Field[FieldX][FieldY];
+public:
+    field()
+    {
+        mines = Mines;
+        Flags = 0;
+        for (uint16_t i = 0; i < mines; i++)
+        {
+            size_t rx = rand() % FieldX;
+            size_t ry = rand() % FieldY;
+            if (Field[rx][ry].minesCount != 9)
+                Field[rx][ry].minesCount = 9;
+        }
+    }
+    void print()
+    {
+        std::cout << "Mines:" << mines << " Flags:" << Flags << std::endl;
+        std::cout << "*";
+        for (int i = 0; i < FieldX; i++) { std::cout << "-"; }
+        std::cout << "*" << std::endl;
+        for (int i = 0; i < FieldY; i++)
+        {
+            std::cout << "|";
+            for (int j = 0; j < FieldX; j++)
+            {
+                     if (Field[j][i].minesCount == 9 && Field[j][i].seen == true) std::cout << '*';
+                else if (Field[j][i].minesCount >= 1 && Field[j][i].seen == true) std::cout << Field[j][i].minesCount;
+                else if (Field[j][i].minesCount == 0 && Field[j][i].seen == true) std::cout << ' ';
+                else if (Field[j][i].flag == true) std::cout << 'F';
+                else std::cout << "X";
+            }
+            std::cout << "|" << std::endl;
+        }
+        std::cout << "*";
+        for (int i = 0; i < FieldX; i++) { std::cout << "-"; }
+        std::cout << "*" << std::endl;
+    }
+    void setFlag(size_t x, size_t y)
+    {
+        if (Field[x][y].seen == false)
+        {
+            if (Field[x][y].flag == false)
+            {
+                Field[x][y].flag = true;
+                Flags++;
+            }
+            if (Field[x][y].flag == false)
+            {
+                Field[x][y].flag = false;
+                Flags--;
+            }
+        }
+    }
+
+};
+
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    field f;
+    f.print();
 }
-
-// Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
-// Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
-
-// Советы по началу работы 
-//   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
-//   2. В окне Team Explorer можно подключиться к системе управления версиями.
-//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
-//   4. В окне "Список ошибок" можно просматривать ошибки.
-//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
-//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.
