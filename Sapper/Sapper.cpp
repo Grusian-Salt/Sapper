@@ -152,7 +152,7 @@ public:
 int main()
 {
     setlocale(LC_ALL, "RUS");
-    field f;
+    field f(Mines);
     while (f.getLife() == true || f.getWin() == false)
     {
         f.print();
